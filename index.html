@@ -88,6 +88,29 @@
             filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.5));
         }
 
+        .target {
+            position: absolute;
+            top: 50px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 40px;
+            height: 40px;
+            background: radial-gradient(circle, #32CD32, #228B22);
+            border-radius: 50%;
+            box-shadow: 0 0 15px rgba(50, 205, 50, 0.7);
+            z-index: 5;
+        }
+
+        .target::after {
+            content: "★";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #FFD700;
+            font-size: 1.2rem;
+        }
+
         .path {
             position: absolute;
             bottom: 30px;
@@ -416,37 +439,39 @@
             100% { transform: scale(0) rotate(45deg); opacity: 0; }
         }
 
+        @keyframes target-glow {
+            0%, 100% { transform: translateX(-50%) scale(1); box-shadow: 0 0 15px rgba(50, 205, 50, 0.7); }
+            50% { transform: translateX(-50%) scale(1.2); box-shadow: 0 0 25px rgba(50, 205, 50, 1); }
+        }
+
         @keyframes attack-animation {
-            0% { content: url('attack_animate1.png'); }
-            10% { content: url('attack_animate2.png'); }
-            20% { content: url('attack_animate3.png'); }
-            30% { content: url('attack_animate4.png'); }
-            40% { content: url('attack_animate5.png'); }
-            50% { content: url('attack_animate6.png'); }
-            60% { content: url('attack_animate7.png'); }
-            70% { content: url('attack_animate8.png'); }
-            80% { content: url('attack_animate9.png'); }
-            90% { content: url('attack_animate10.png'); }
-            100% { content: url('white_guy.png'); }
+            0% { background-image: url('attack_animate1.png'); }
+            10% { background-image: url('attack_animate2.png'); }
+            20% { background-image: url('attack_animate3.png'); }
+            30% { background-image: url('attack_animate4.png'); }
+            40% { background-image: url('attack_animate5.png'); }
+            50% { background-image: url('attack_animate6.png'); }
+            60% { background-image: url('attack_animate7.png'); }
+            70% { background-image: url('attack_animate8.png'); }
+            80% { background-image: url('attack_animate9.png'); }
+            90% { background-image: url('attack_animate10.png'); }
+            100% { background-image: url('white_guy.png'); }
         }
 
         .hero {
             animation: 
-                hero-move 8s ease-in-out infinite;
-        }
-
-        .hero::after {
-            content: "";
-            animation: attack-animation 8s steps(1) infinite;
-            animation-delay: 3.2s;
-            display: block;
-            width: 100%;
-            height: 100%;
+                hero-move 8s ease-in-out infinite,
+                attack-animation 8s steps(1) infinite;
+            animation-delay: 0s, 3.2s;
         }
 
         .villain {
             animation: villain-defeat 8s ease-in-out infinite;
             animation-delay: 3.2s;
+        }
+
+        .target {
+            animation: target-glow 2s ease-in-out infinite;
         }
 
         /* Дополнительные средневековые элементы */
@@ -464,6 +489,7 @@
             
             <div class="game-scene">
                 <div class="path"></div>
+                <div class="target"></div>
                 <div class="hero"></div>
                 <div class="villain"></div>
             </div>
@@ -634,42 +660,5 @@
             <p style="margin-top: 10px; font-size: 1rem; opacity: 0.7;">Сделано с ❤️ для будущих программистов</p>
         </div>
     </footer>
-
-    <script>
-        // JavaScript для имитации анимации атаки
-        document.addEventListener('DOMContentLoaded', function() {
-            const hero = document.querySelector('.hero');
-            let attackFrame = 1;
-            
-            // Функция для смены кадров атаки
-            function animateAttack() {
-                if (attackFrame <= 10) {
-                    hero.style.backgroundImage = `url('attack_animate${attackFrame}.png')`;
-                    attackFrame++;
-                    setTimeout(animateAttack, 80); // 80ms между кадрами
-                } else {
-                    // Возвращаем обычное изображение героя
-                    hero.style.backgroundImage = "url('white_guy.png')";
-                    attackFrame = 1;
-                }
-            }
-            
-            // Запускаем анимацию каждые 8 секунд (синхронизируем с CSS-анимацией)
-            setInterval(function() {
-                setTimeout(animateAttack, 3200); // Запускаем через 3.2 секунды
-            }, 8000);
-            
-            // Устанавливаем начальное изображение для героя
-            hero.style.backgroundImage = "url('white_guy.png')";
-            hero.style.backgroundSize = "contain";
-            hero.style.backgroundRepeat = "no-repeat";
-            
-            // Устанавливаем изображение для злодея
-            const villain = document.querySelector('.villain');
-            villain.style.backgroundImage = "url('red_guy.png')";
-            villain.style.backgroundSize = "contain";
-            villain.style.backgroundRepeat = "no-repeat";
-        });
-    </script>
 </body>
 </html>
