@@ -120,22 +120,6 @@
             z-index: 1;
         }
 
-        .obstacle {
-            position: absolute;
-            bottom: 30px;
-            left: 200px;
-            width: 30px;
-            height: 40px;
-            background: #A9A9A9;
-            border-radius: 5px;
-            z-index: 2;
-        }
-
-        .obstacle:nth-child(2) {
-            left: 300px;
-            height: 50px;
-        }
-
         /* Основные секции */
         section {
             padding: 80px 0;
@@ -440,14 +424,21 @@
         /* Анимации */
         @keyframes hero-move {
             0% { left: 100px; }
-            50% { left: 250px; transform: scale(1.1); }
-            100% { left: 400px; }
+            30% { left: 250px; transform: scale(1.1); }
+            35% { left: 400px; }
+            45% { left: 400px; } /* Борьба */
+            65% { left: 400px; } /* Борьба продолжается */
+            70% { left: 100px; } /* Быстрое возвращение */
+            100% { left: 100px; }
         }
 
         @keyframes villain-defeat {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.2) rotate(10deg); }
-            100% { transform: scale(0) rotate(45deg); opacity: 0; }
+            0% { transform: scale(1); opacity: 1; }
+            65% { transform: scale(1); opacity: 1; } /* До окончания борьбы */
+            70% { transform: scale(1.2) rotate(10deg); opacity: 1; }
+            80% { transform: scale(0) rotate(45deg); opacity: 0; }
+            85% { transform: scale(1); opacity: 1; } /* Быстрое восстановление */
+            100% { transform: scale(1); opacity: 1; }
         }
 
         @keyframes target-glow {
@@ -455,17 +446,57 @@
             50% { transform: translateX(-50%) scale(1.2); box-shadow: 0 0 25px rgba(50, 205, 50, 1); }
         }
 
+        @keyframes fight-animation {
+            0% { background-image: url('attack_animate1.png'); }
+            10% { background-image: url('attack_animate2.png'); }
+            20% { background-image: url('attack_animate3.png'); }
+            30% { background-image: url('attack_animate4.png'); }
+            40% { background-image: url('attack_animate5.png'); }
+            50% { background-image: url('attack_animate6.png'); }
+            60% { background-image: url('attack_animate7.png'); }
+            70% { background-image: url('attack_animate8.png'); }
+            80% { background-image: url('attack_animate9.png'); }
+            90% { background-image: url('attack_animate10.png'); }
+            100% { background-image: url('attack_animate1.png'); }
+        }
+
         .hero {
-            animation: hero-move 5s ease-in-out infinite;
+            animation: hero-move 6s ease-in-out infinite;
         }
 
         .villain {
-            animation: villain-defeat 5s ease-in-out infinite;
-            animation-delay: 2.5s;
+            animation: villain-defeat 6s ease-in-out infinite;
         }
 
         .target {
             animation: target-glow 2s ease-in-out infinite;
+        }
+
+        .fight-animation {
+            position: absolute;
+            bottom: 30px;
+            left: 370px;
+            width: 100px;
+            height: 100px;
+            z-index: 15;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            animation: fight-animation 1s steps(1) infinite;
+            opacity: 0;
+        }
+
+        .fight-active {
+            animation: fight-animation 1s steps(1) infinite, fight-visibility 6s ease-in-out infinite;
+        }
+
+        @keyframes fight-visibility {
+            0% { opacity: 0; }
+            45% { opacity: 0; }
+            46% { opacity: 1; }
+            65% { opacity: 1; }
+            66% { opacity: 0; }
+            100% { opacity: 0; }
         }
 
         /* Дополнительные средневековые элементы */
@@ -483,11 +514,10 @@
             
             <div class="game-scene">
                 <div class="path"></div>
-                <div class="obstacle"></div>
-                <div class="obstacle"></div>
                 <div class="target"></div>
                 <img class="hero" src="white_guy.png" alt="Герой">
                 <img class="villain" src="red_guy.png" alt="Злодей">
+                <div class="fight-animation fight-active"></div>
             </div>
         </div>
     </header>
