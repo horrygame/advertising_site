@@ -64,6 +64,7 @@
             border: 3px solid #8b4513;
             border-radius: 10px;
             box-shadow: 0 0 20px rgba(139, 69, 19, 0.5);
+            overflow: hidden;
         }
 
         .hero {
@@ -424,21 +425,18 @@
         /* Анимации */
         @keyframes hero-move {
             0% { left: 100px; }
-            30% { left: 250px; transform: scale(1.1); }
-            35% { left: 400px; }
-            45% { left: 400px; } /* Борьба */
-            65% { left: 400px; } /* Борьба продолжается */
-            70% { left: 100px; } /* Быстрое возвращение */
-            100% { left: 100px; }
+            40% { left: 320px; }
+            100% { left: 320px; }
         }
 
         @keyframes villain-defeat {
-            0% { transform: scale(1); opacity: 1; }
-            65% { transform: scale(1); opacity: 1; } /* До окончания борьбы */
-            70% { transform: scale(1.2) rotate(10deg); opacity: 1; }
-            80% { transform: scale(0) rotate(45deg); opacity: 0; }
-            85% { transform: scale(1); opacity: 1; } /* Быстрое восстановление */
-            100% { transform: scale(1); opacity: 1; }
+            0%, 40% { opacity: 1; transform: scale(1) rotate(0deg); }
+            50% { transform: scale(1.1) rotate(-5deg); }
+            60% { transform: scale(1.1) rotate(5deg); }
+            70% { transform: scale(1.1) rotate(-5deg); }
+            80% { transform: scale(1.1) rotate(5deg); }
+            90% { transform: scale(0.8) rotate(10deg); opacity: 0.7; }
+            100% { transform: scale(0) rotate(45deg); opacity: 0; }
         }
 
         @keyframes target-glow {
@@ -446,7 +444,7 @@
             50% { transform: translateX(-50%) scale(1.2); box-shadow: 0 0 25px rgba(50, 205, 50, 1); }
         }
 
-        @keyframes fight-animation {
+        @keyframes attack-animation {
             0% { background-image: url('attack_animate1.png'); }
             10% { background-image: url('attack_animate2.png'); }
             20% { background-image: url('attack_animate3.png'); }
@@ -457,46 +455,23 @@
             70% { background-image: url('attack_animate8.png'); }
             80% { background-image: url('attack_animate9.png'); }
             90% { background-image: url('attack_animate10.png'); }
-            100% { background-image: url('attack_animate1.png'); }
+            100% { background-image: url('white_guy.png'); }
         }
 
         .hero {
-            animation: hero-move 6s ease-in-out infinite;
+            animation: 
+                hero-move 8s ease-in-out infinite,
+                attack-animation 8s steps(1) infinite;
+            animation-delay: 0s, 3.2s;
         }
 
         .villain {
-            animation: villain-defeat 6s ease-in-out infinite;
+            animation: villain-defeat 8s ease-in-out infinite;
+            animation-delay: 3.2s;
         }
 
         .target {
             animation: target-glow 2s ease-in-out infinite;
-        }
-
-        .fight-animation {
-            position: absolute;
-            bottom: 30px;
-            left: 370px;
-            width: 100px;
-            height: 100px;
-            z-index: 15;
-            background-size: contain;
-            background-repeat: no-repeat;
-            background-position: center;
-            animation: fight-animation 1s steps(1) infinite;
-            opacity: 0;
-        }
-
-        .fight-active {
-            animation: fight-animation 1s steps(1) infinite, fight-visibility 6s ease-in-out infinite;
-        }
-
-        @keyframes fight-visibility {
-            0% { opacity: 0; }
-            45% { opacity: 0; }
-            46% { opacity: 1; }
-            65% { opacity: 1; }
-            66% { opacity: 0; }
-            100% { opacity: 0; }
         }
 
         /* Дополнительные средневековые элементы */
@@ -515,9 +490,8 @@
             <div class="game-scene">
                 <div class="path"></div>
                 <div class="target"></div>
-                <img class="hero" src="white_guy.png" alt="Герой">
-                <img class="villain" src="red_guy.png" alt="Злодей">
-                <div class="fight-animation fight-active"></div>
+                <div class="hero"></div>
+                <div class="villain"></div>
             </div>
         </div>
     </header>
