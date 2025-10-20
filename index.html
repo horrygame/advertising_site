@@ -120,16 +120,20 @@
             z-index: 1;
         }
 
-        .attack-animation {
+        .obstacle {
             position: absolute;
             bottom: 30px;
-            left: 330px;
-            width: 100px;
-            height: 100px;
-            background-image: url('attack_animate1.png');
-            background-size: cover;
-            z-index: 15;
-            opacity: 0;
+            left: 200px;
+            width: 30px;
+            height: 40px;
+            background: #A9A9A9;
+            border-radius: 5px;
+            z-index: 2;
+        }
+
+        .obstacle:nth-child(2) {
+            left: 300px;
+            height: 50px;
         }
 
         /* Основные секции */
@@ -436,17 +440,14 @@
         /* Анимации */
         @keyframes hero-move {
             0% { left: 100px; }
-            40% { left: 330px; }
-            60% { left: 330px; }
-            100% { left: 100px; }
+            50% { left: 250px; transform: scale(1.1); }
+            100% { left: 400px; }
         }
 
         @keyframes villain-defeat {
-            0%, 40% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.8; transform: scale(0.95); }
-            60% { opacity: 0; transform: scale(0); }
-            90% { opacity: 0; transform: scale(0); }
-            100% { opacity: 1; transform: scale(1); }
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2) rotate(10deg); }
+            100% { transform: scale(0) rotate(45deg); opacity: 0; }
         }
 
         @keyframes target-glow {
@@ -454,38 +455,17 @@
             50% { transform: translateX(-50%) scale(1.2); box-shadow: 0 0 25px rgba(50, 205, 50, 1); }
         }
 
-        @keyframes attack-animation {
-            0% { opacity: 0; }
-            40% { opacity: 0; }
-            41% { 
-                opacity: 1; 
-                background-image: url('attack_animate1.png'); 
-            }
-            45% { background-image: url('attack_animate2.png'); }
-            50% { background-image: url('attack_animate3.png'); }
-            55% { background-image: url('attack_animate4.png'); }
-            60% { 
-                background-image: url('attack_animate5.png'); 
-                opacity: 1; 
-            }
-            61% { opacity: 0; }
-            100% { opacity: 0; }
-        }
-
         .hero {
-            animation: hero-move 8s ease-in-out infinite;
+            animation: hero-move 5s ease-in-out infinite;
         }
 
         .villain {
-            animation: villain-defeat 8s ease-in-out infinite;
+            animation: villain-defeat 5s ease-in-out infinite;
+            animation-delay: 2.5s;
         }
 
         .target {
             animation: target-glow 2s ease-in-out infinite;
-        }
-
-        .attack-animation {
-            animation: attack-animation 8s ease-in-out infinite;
         }
 
         /* Дополнительные средневековые элементы */
@@ -503,10 +483,11 @@
             
             <div class="game-scene">
                 <div class="path"></div>
+                <div class="obstacle"></div>
+                <div class="obstacle"></div>
                 <div class="target"></div>
                 <img class="hero" src="white_guy.png" alt="Герой">
                 <img class="villain" src="red_guy.png" alt="Злодей">
-                <div class="attack-animation"></div>
             </div>
         </div>
     </header>
@@ -675,53 +656,5 @@
             <p style="margin-top: 10px; font-size: 1rem; opacity: 0.7;">Сделано с ❤️ для будущих программистов</p>
         </div>
     </footer>
-
-    <script>
-        // JavaScript для управления анимацией атаки
-        document.addEventListener('DOMContentLoaded', function() {
-            const attackAnimation = document.querySelector('.attack-animation');
-            const frames = [
-                'attack_animate1.png',
-                'attack_animate2.png',
-                'attack_animate3.png',
-                'attack_animate4.png',
-                'attack_animate5.png',
-                'attack_animate6.png',
-                'attack_animate7.png',
-                'attack_animate8.png',
-                'attack_animate9.png',
-                'attack_animate10.png'
-            ];
-            
-            let currentFrame = 0;
-            let isAttacking = false;
-            
-            // Функция для проигрывания анимации атаки
-            function playAttackAnimation() {
-                if (!isAttacking) {
-                    isAttacking = true;
-                    attackAnimation.style.opacity = '1';
-                    
-                    const attackInterval = setInterval(() => {
-                        attackAnimation.style.backgroundImage = `url('${frames[currentFrame]}')`;
-                        currentFrame++;
-                        
-                        if (currentFrame >= frames.length) {
-                            clearInterval(attackInterval);
-                            attackAnimation.style.opacity = '0';
-                            isAttacking = false;
-                            currentFrame = 0;
-                        }
-                    }, 200); // 2 кадра в секунду (1000ms / 5 кадров)
-                }
-            }
-            
-            // Запуск анимации атаки каждые 8 секунд (синхронизировано с CSS анимацией)
-            setInterval(playAttackAnimation, 8000);
-            
-            // Первый запуск с небольшой задержкой
-            setTimeout(playAttackAnimation, 4000);
-        });
-    </script>
 </body>
 </html>
