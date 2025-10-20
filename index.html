@@ -91,6 +91,7 @@
             background-repeat: no-repeat;
             background-position: center;
             z-index: 10;
+            transition: all 0.5s ease;
         }
 
         .target {
@@ -447,6 +448,23 @@
             100% { left: 200px; }
         }
 
+        @keyframes hero-teleport {
+            0% { opacity: 1; }
+            50% { opacity: 0; transform: scale(0.5); }
+            100% { opacity: 1; left: 100px; transform: scale(1); }
+        }
+
+        @keyframes villain-death {
+            0% { transform: scale(1) rotate(0deg); opacity: 1; }
+            50% { transform: scale(0.8) rotate(180deg); opacity: 0.5; }
+            100% { transform: scale(0) rotate(360deg); opacity: 0; }
+        }
+
+        @keyframes villain-respawn {
+            0% { transform: scale(0); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
         @keyframes attack-sequence {
             0% { opacity: 0; }
             10% { opacity: 1; }
@@ -457,11 +475,6 @@
         @keyframes target-glow {
             0%, 100% { transform: translateX(-50%) scale(1); box-shadow: 0 0 15px rgba(50, 205, 50, 0.7); }
             50% { transform: translateX(-50%) scale(1.2); box-shadow: 0 0 25px rgba(50, 205, 50, 1); }
-        }
-
-        .hero {
-            animation: hero-move 3s ease-in-out forwards;
-            animation-delay: 1s;
         }
 
         .target {
@@ -484,8 +497,8 @@
             <div class="game-scene">
                 <div class="path"></div>
                 <div class="target"></div>
-                <div class="hero"></div>
-                <div class="villain"></div>
+                <div class="hero" id="hero"></div>
+                <div class="villain" id="villain"></div>
                 <div class="attack-animation" id="attackAnimation"></div>
             </div>
         </div>
@@ -659,6 +672,8 @@
     <script>
         // Анимация атаки
         document.addEventListener('DOMContentLoaded', function() {
+            const hero = document.getElementById('hero');
+            const villain = document.getElementById('villain');
             const attackAnimation = document.getElementById('attackAnimation');
             const attackFrames = [
                 'attack_animate1.png',
@@ -676,21 +691,46 @@
             let currentFrame = 0;
             let animationInterval;
             
-            // Запуск анимации после того, как герой дошел до злодея
-            setTimeout(() => {
-                attackAnimation.style.animation = 'attack-sequence 5s ease-in-out forwards';
+            function startGameCycle() {
+                // 1. Герой движется к злодею
+                hero.style.animation = 'hero-move 3s ease-in-out forwards';
                 
-                animationInterval = setInterval(() => {
-                    attackAnimation.style.backgroundImage = `url('${attackFrames[currentFrame]}')`;
-                    currentFrame = (currentFrame + 1) % attackFrames.length;
-                }, 500); // 2 кадра в секунду
-                
-                // Остановка анимации через 5 секунд
+                // 2. После движения запускаем атаку
                 setTimeout(() => {
-                    clearInterval(animationInterval);
-                }, 5000);
-                
-            }, 4000); // Запуск через 4 секунды (после движения героя)
+                    attackAnimation.style.animation = 'attack-sequence 5s ease-in-out forwards';
+                    
+                    animationInterval = setInterval(() => {
+                        attackAnimation.style.backgroundImage = `url('${attackFrames[currentFrame]}')`;
+                        currentFrame = (currentFrame + 1) % attackFrames.length;
+                    }, 500); // 2 кадра в секунду
+                    
+                    // 3. После атаки запускаем смерть злодея
+                    setTimeout(() => {
+                        clearInterval(animationInterval);
+                        villain.style.animation = 'villain-death 3s ease-in-out forwards';
+                        
+                        // 4. После смерти злодея телепортируем героя и восстанавливаем злодея
+                        setTimeout(() => {
+                            villain.style.animation = 'villain-respawn 1s ease-in-out forwards';
+                            hero.style.animation = 'hero-teleport 1s ease-in-out forwards';
+                            
+                            // 5. После телепортации начинаем цикл заново
+                            setTimeout(() => {
+                                hero.style.animation = '';
+                                villain.style.animation = '';
+                                attackAnimation.style.animation = '';
+                                attackAnimation.style.backgroundImage = '';
+                                
+                                // Перезапускаем цикл
+                                startGameCycle();
+                            }, 1000);
+                        }, 3000);
+                    }, 5000);
+                }, 3000);
+            }
+            
+            // Начинаем игровой цикл
+            startGameCycle();
         });
     </script>
 </body>
